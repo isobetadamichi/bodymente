@@ -1,0 +1,18 @@
+{
+  "name": "ボディメンテ｜90→75 格闘家BODY",
+  "short_name": "ボディメンテ",
+  "description": "朝のルーティーン・食事・トレーニングを脳死で管理。90→75kg 格闘家ボディ計画。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0e12",
+  "theme_color": "#0d0e12",
+  "lang": "ja",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

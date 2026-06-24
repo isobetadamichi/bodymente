@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ボディメンテ">
+<meta name="theme-color" content="#0d0e12">
+<title>ボディメンテ｜90→75 格闘家BODY</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+  /* ===== テーマ ===== */
+  :root, [data-theme="dark"]{
+    --bg:#0d0e12; --bg2:#15171d; --card:#1b1e26; --card2:#262a34;
+    --line:#2f343f; --txt:#f6f7f9; --sub:#aeb4c0; --mut:#7b8294;
+    --accent:#ff5d3b; --accent2:#ff9166; --ok:#3ddc97; --gold:#ffc94b; --blue:#5fa0ff;
+    --shadow:0 6px 20px rgba(0,0,0,.35); --hairline:rgba(255,255,255,.06);
+  }
+  [data-theme="light"]{
+    --bg:#f3f5f9; --bg2:#ffffff; --card:#ffffff; --card2:#eef1f6;
+    --line:#e2e6ee; --txt:#171a21; --sub:#5a6473; --mut:#9aa2b1;
+    --accent:#f04a26; --accent2:#ff7a4d; --ok:#13b577; --gold:#e89a00; --blue:#2f7bff;
+    --shadow:0 6px 18px rgba(20,30,60,.08); --hairline:rgba(20,30,60,.05);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+    background:var(--bg); color:var(--txt);
+    padding-bottom:calc(82px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    transition:background .25s, color .25s;
+  }
+  .wrap{max-width:540px; margin:0 auto; padding:0 18px;}
+
+  /* ===== ヘッダー ===== */
+  header{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:saturate(180%) blur(14px);
+    padding:calc(env(safe-area-inset-top) + 14px) 18px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .hd-row{max-width:540px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:14px;}
+  .hd-title{font-size:13px; color:var(--sub); font-weight:600; letter-spacing:.02em;}
+  .hd-main{font-size:23px; font-weight:900; margin-top:3px; letter-spacing:.01em;}
+  .hd-main .a{color:var(--accent);}
+  .hd-main small{font-size:13px; color:var(--sub); font-weight:700;}
+  .ring{width:62px; height:62px; flex:0 0 62px; position:relative;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .lbl{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900;}
+
+  /* ===== セクション ===== */
+  section{display:none; padding-top:18px;}
+  section.active{display:block; animation:fade .28s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+  h2.sec{font-size:21px; font-weight:900; margin:6px 0 6px; display:flex; align-items:center; gap:10px;}
+  h2.sec::before{content:""; width:5px; height:22px; border-radius:3px; background:linear-gradient(var(--accent),var(--gold));}
+  .lead{font-size:14px; line-height:1.65; color:var(--sub); margin:0 0 14px;}
+  .muted{color:var(--sub); font-size:14px;}
+
+  /* ===== カード ===== */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:18px; margin-bottom:16px; box-shadow:var(--shadow);}
+  .card-h{display:flex; align-items:center; gap:12px; margin-bottom:6px;}
+  .card-h .ico{width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:22px; background:var(--card2);}
+  .card-h .t{font-size:17px; font-weight:900; letter-spacing:.01em;}
+  .card-h .s{font-size:13px; color:var(--sub); margin-top:2px; font-weight:600;}
+  .tag{font-size:12px; font-weight:900; padding:5px 12px; border-radius:999px; letter-spacing:.04em;}
+  .tag.gym{background:rgba(255,93,59,.18); color:var(--accent2);}
+  .tag.home{background:rgba(95,160,255,.18); color:var(--blue);}
+  .tag.rest{background:rgba(61,220,151,.18); color:var(--ok);}
+
+  /* ===== チェック項目 ===== */
+  .item{display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid var(--line);}
+  .item:first-of-type{border-top:none;}
+  .chk{width:30px; height:30px; flex:0 0 30px; border-radius:50%; border:2.5px solid var(--mut); display:flex; align-items:center; justify-content:center; transition:.15s;}
+  .chk.on{background:var(--ok); border-color:var(--ok); transform:scale(1.05);}
+  .chk.on::after{content:"✓"; color:#04231a; font-weight:900; font-size:17px;}
+  .item .body{flex:1; min-width:0;}
+  .item .name{font-size:16px; font-weight:700; line-height:1.35;}
+  .item.done .name{color:var(--mut); text-decoration:line-through;}
+  .item .meta{font-size:13.5px; color:var(--sub); margin-top:3px; font-weight:600;}
+  .item .meta b{color:var(--accent2); font-weight:800;}
+  .yt{flex:0 0 auto; background:#ff0033; color:#fff; border:none; font-weight:900; font-size:13px; padding:9px 13px; border-radius:11px; display:flex; align-items:center; gap:5px; cursor:pointer; text-decoration:none; box-shadow:0 3px 10px rgba(255,0,51,.3);}
+  .yt:active{transform:scale(.94);}
+  .yt.alt{background:var(--card2); color:var(--accent); box-shadow:none; border:1px solid var(--line);}
+  .blk-label{font-size:12px; font-weight:900; color:var(--mut); letter-spacing:.1em; margin:18px 0 2px; display:flex; align-items:center; gap:8px;}
+  .blk-label::after{content:""; flex:1; height:1px; background:var(--line);}
+
+  /* ===== 週間ピル ===== */
+  .week{display:flex; gap:9px; overflow-x:auto; padding:4px 0 12px; -webkit-overflow-scrolling:touch;}
+  .week::-webkit-scrollbar{display:none;}
+  .dpill{flex:0 0 auto; background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; text-align:center; min-width:66px; box-shadow:var(--shadow);}
+  .dpill.today{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, var(--card));}
+  .dpill.sel{outline:3px solid var(--accent); outline-offset:1px;}
+  .dpill .d{font-size:16px; font-weight:900;}
+  .dpill .ty{font-size:11px; margin-top:5px; color:var(--sub); font-weight:700;}
+
+  /* ===== スタッツ ===== */
+  .stat-row{display:flex; gap:11px; margin-bottom:16px;}
+  .stat{flex:1; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px 8px; text-align:center; box-shadow:var(--shadow);}
+  .stat .v{font-size:27px; font-weight:900; line-height:1;}
+  .stat .v small{font-size:14px; font-weight:800; color:var(--sub);}
+  .stat .k{font-size:12px; color:var(--sub); margin-top:8px; font-weight:700;}
+  .v.acc{color:var(--accent);} .v.ok{color:var(--ok);} .v.gold{color:var(--gold);}
+
+  /* ===== 入力/ボタン ===== */
+  .winput{display:flex; gap:11px; margin:8px 0 6px;}
+  .winput input{flex:1; background:var(--card2); border:1.5px solid var(--line); border-radius:14px; color:var(--txt); font-size:18px; font-weight:700; padding:15px 16px; outline:none;}
+  .winput input:focus{border-color:var(--accent);}
+  .btn{background:var(--accent); color:#fff; border:none; font-weight:900; font-size:16px; padding:15px 20px; border-radius:14px; cursor:pointer;}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:var(--card2); color:var(--txt); border:1.5px solid var(--line);}
+  .btn.full{width:100%;}
+
+  /* ===== グラフ/記録 ===== */
+  .wlog{display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-top:1px solid var(--line); font-size:15px;}
+  .wlog .dt{color:var(--sub); font-weight:700;}
+  .delta{font-size:13px; font-weight:900; margin-left:8px;}
+  .down{color:var(--ok);} .up{color:var(--accent);}
+
+  /* ===== ナビ ===== */
+  nav{position:fixed; bottom:0; left:0; right:0; z-index:30;
+    background:color-mix(in srgb, var(--bg2) 92%, transparent); backdrop-filter:saturate(180%) blur(16px); border-top:1px solid var(--line);
+    padding:9px 0 calc(9px + env(safe-area-inset-bottom));}
+  .nav-in{max-width:540px; margin:0 auto; display:flex; padding:0 6px;}
+  .nav-in button{flex:1; background:none; border:none; color:var(--mut); display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11px; font-weight:800; cursor:pointer; padding:5px 0; border-radius:14px; transition:.15s;}
+  .nav-in button .ni{font-size:23px; line-height:1;}
+  .nav-in button.on{color:var(--accent);}
+  .nav-in button.on .ni{transform:translateY(-1px);}
+
+  /* ===== ヒーロー ===== */
+  .hero{background:linear-gradient(135deg,#ff5d3b,#ff2d55); border-radius:22px; padding:20px; margin-bottom:16px; color:#fff; box-shadow:0 10px 26px rgba(255,45,85,.32);}
+  .hero .badge{display:inline-block; background:rgba(255,255,255,.22); font-size:12px; font-weight:900; padding:4px 11px; border-radius:999px; letter-spacing:.04em;}
+  .hero .big{font-size:19px; font-weight:900; margin-top:10px; line-height:1.3;}
+  .hero .sub{font-size:14px; opacity:.95; margin-top:5px; font-weight:600;}
+
+  .pbar{height:12px; background:var(--card2); border-radius:99px; overflow:hidden; margin-top:10px;}
+  .pbar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--gold)); transition:width .4s;}
+  .note{font-size:13px; color:var(--mut); line-height:1.6; font-weight:600;}
+  .rules li{margin:10px 0; font-size:15px; line-height:1.55; font-weight:600;}
+  .rules{padding-left:22px; margin:4px 0 0;}
+  .rules li::marker{color:var(--accent); font-weight:900;}
+
+  /* テーマ切替 */
+  .seg{display:flex; background:var(--card2); border-radius:14px; padding:5px; gap:5px;}
+  .seg button{flex:1; border:none; background:none; color:var(--sub); font-weight:900; font-size:15px; padding:11px; border-radius:10px; cursor:pointer;}
+  .seg button.on{background:var(--accent); color:#fff;}
+
+  .toast{position:fixed; bottom:96px; left:50%; transform:translateX(-50%); background:var(--txt); color:var(--bg); font-weight:900; font-size:15px; padding:13px 22px; border-radius:99px; opacity:0; pointer-events:none; transition:.25s; z-index:50; box-shadow:0 8px 24px rgba(0,0,0,.3);}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+</style>
+</head>
+<body data-theme="dark">
+
+<header>
+  <div class="hd-row">
+    <div>
+      <div class="hd-title" id="hdDate">― 今日のメニュー</div>
+      <div class="hd-main">90<span class="a">→</span>75 <small>格闘家BODY計画</small></div>
+    </div>
+    <div class="ring" id="ringWrap">
+      <svg width="62" height="62">
+        <circle cx="31" cy="31" r="26" stroke="var(--card2)" stroke-width="7" fill="none"/>
+        <circle id="ringFg" cx="31" cy="31" r="26" stroke="#3ddc97" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4"/>
+      </svg>
+      <div class="lbl" id="ringLbl">0%</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== 今日 ===== -->
+  <section id="tab-today" class="active">
+    <div class="hero">
+      <span class="badge" id="heroBadge">今日</span>
+      <div class="big" id="heroTitle">今日のトレーニング</div>
+      <div class="sub" id="heroSub">上から順にこなすだけ。脳死でOK。</div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <div class="ico">🌅</div>
+        <div style="flex:1"><div class="t">朝のルーティーン</div><div class="s">起きたら上から順番に</div></div>
+      </div>
+      <div id="morningList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <div class="ico" id="trainIco">🏋️</div>
+        <div style="flex:1"><div class="t" id="trainTitle">トレーニング</div><div class="s" id="trainSub"></div></div>
+        <span class="tag" id="trainTag">GYM</span>
+      </div>
+      <div id="trainList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <div class="ico">🍽️</div>
+        <div style="flex:1"><div class="t">今日の食事</div><div class="s">減量モード｜目標 1,900kcal・P180g</div></div>
+      </div>
+      <div id="mealList"></div>
+      <button class="btn ghost full" style="margin-top:14px" onclick="go('meal')">食事プランの詳細を見る →</button>
+    </div>
+  </section>
+
+  <!-- ===== 週間メニュー ===== -->
+  <section id="tab-week">
+    <h2 class="sec">週間プログラム</h2>
+    <p class="lead">ジム3日＋自宅2日＋有酸素1日＋休養1日。減量しながら筋肉を残し、格闘家の動ける身体へ。曜日をタップで切替。</p>
+    <div class="week" id="weekPills"></div>
+    <div id="weekDetail"></div>
+  </section>
+
+  <!-- ===== 食事 ===== -->
+  <section id="tab-meal">
+    <h2 class="sec">食事プラン</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="v acc">1,900</div><div class="k">kcal / 日</div></div>
+      <div class="stat"><div class="v ok">180<small>g</small></div><div class="k">タンパク質</div></div>
+      <div class="stat"><div class="v gold">50<small>g</small></div><div class="k">脂質</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">🥗</div><div class="t">1日の献立モデル</div></div>
+      <div id="mealPlan"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">📏</div><div class="t">減量の鉄則</div></div>
+      <ol class="rules" id="rulesList"></ol>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">▶️</div><div class="t">献立・レシピ動画</div></div>
+      <div id="recipeList"></div>
+    </div>
+  </section>
+
+  <!-- ===== 体重 ===== -->
+  <section id="tab-weight">
+    <h2 class="sec">体重記録</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="v" id="wNow">―</div><div class="k">現在 kg</div></div>
+      <div class="stat"><div class="v acc" id="wLeft">―</div><div class="k">目標まで kg</div></div>
+      <div class="stat"><div class="v ok" id="wLost">―</div><div class="k">減った kg</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">⚖️</div><div class="t">今日の体重を記録</div></div>
+      <div class="winput">
+        <input id="wInput" type="number" inputmode="decimal" step="0.1" placeholder="例: 89.4">
+        <button class="btn" onclick="addWeight()">記録</button>
+      </div>
+      <div class="note">毎朝トイレ後・朝食前に測るのがおすすめ。</div>
+      <div class="pbar"><i id="goalBar" style="width:0%"></i></div>
+      <div class="note" id="goalNote" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">📈</div><div class="t">推移グラフ</div></div>
+      <div id="chart"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">🗒️</div><div class="t">記録一覧</div></div>
+      <div id="wList"><div class="note">まだ記録がありません。</div></div>
+    </div>
+  </section>
+
+  <!-- ===== 設定 ===== -->
+  <section id="tab-set">
+    <h2 class="sec">設定</h2>
+    <div class="card">
+      <div class="card-h"><div class="ico">🎨</div><div class="t">表示テーマ</div></div>
+      <div class="seg" id="themeSeg">
+        <button data-th="dark" onclick="setTheme('dark')">🌙 ダーク</button>
+        <button data-th="light" onclick="setTheme('light')">☀️ ライト</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">🎯</div><div class="t">目標設定</div></div>
+      <div class="note" style="margin-bottom:8px">スタート体重：<b id="setStart" style="color:var(--txt)">90 kg</b></div>
+      <div class="winput"><input id="goalInput" type="number" inputmode="decimal" step="0.5" placeholder="目標体重 (kg)"><button class="btn" onclick="setGoal()">更新</button></div>
+      <div class="note">現在の目標：<b id="setGoal2" style="color:var(--accent)">75 kg</b></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">📲</div><div class="t">ホーム画面に追加</div></div>
+      <p class="lead" style="margin:0">Safariの共有ボタン → 「ホーム画面に追加」で、本物のアプリのように全画面で使えます。毎朝これを開くだけ。</p>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">🧹</div><div class="t">データ管理</div></div>
+      <button class="btn ghost full" style="margin-bottom:11px" onclick="resetToday()">今日のチェックをリセット</button>
+      <button class="btn ghost full" onclick="clearAll()">全データを削除</button>
+    </div>
+    <p class="note" style="text-align:center; margin-top:22px">ボディメンテ v1.1 ・ データはこの端末内に保存されます</p>
+  </section>
+
+</div>
+
+<nav>
+  <div class="nav-in">
+    <button data-tab="today" class="on" onclick="go('today')"><span class="ni">🔥</span>今日</button>
+    <button data-tab="week" onclick="go('week')"><span class="ni">📅</span>メニュー</button>
+    <button data-tab="meal" onclick="go('meal')"><span class="ni">🍽️</span>食事</button>
+    <button data-tab="weight" onclick="go('weight')"><span class="ni">⚖️</span>体重</button>
+    <button data-tab="set" onclick="go('set')"><span class="ni">⚙️</span>設定</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ====================== データ定義 ====================== */
+const YT = id => "https://www.youtube.com/watch?v=" + id;
+const YTS = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+const vlink = ex => ex.v ? YT(ex.v) : YTS(ex.q);
+
+const MORNING = [
+  {name:"起床｜カーテンを開けて朝日を浴びる", meta:"体内時計をリセット"},
+  {name:"コップ1杯の水を飲む", meta:"500ml｜代謝スイッチON"},
+  {name:"朝の全身ストレッチ 5分", meta:"目覚め＆ケガ予防", v:"gMIlRS_lbYA"},
+  {name:"体重を測って記録する", meta:"トイレ後・朝食前がベスト", tab:"weight"},
+  {name:"洗顔・身支度", meta:""},
+  {name:"高タンパクな朝食をとる", meta:"卵・プロテイン・オートミール", tab:"meal"},
+  {name:"今日のトレーニングを確認", meta:"下のカードへ"}
+];
+
+const MEALS_TODAY = [
+  {name:"朝食", meta:"卵3個＋オートミール＋ヨーグルト＋バナナ（約450kcal）"},
+  {name:"昼食", meta:"鶏むね200g＋白米150g＋味噌汁＋サラダ（約600kcal）"},
+  {name:"間食", meta:"プロテイン＋素焼きナッツ少量（約200kcal）"},
+  {name:"夕食", meta:"赤身肉or魚＋豆腐＋温野菜（炭水化物控えめ・約550kcal）"},
+  {name:"水を2〜3L飲んだ", meta:"こまめに。空腹対策にも"}
+];
+
+const PROGRAM = {
+  1:{day:"月", title:"ジム・プッシュ", sub:"胸・肩・三頭＋有酸素", tag:"gym", ico:"🏋️", blocks:[
+    {label:"ウォームアップ", ex:[{name:"軽い有酸素＋肩回し 5分", set:"5分", q:"トレーニング前 ウォームアップ 動的ストレッチ"}]},
+    {label:"メイン", ex:[
+      {name:"ベンチプレス", set:"4セット × 8-10回", v:"gw_uE7D3v8w"},
+      {name:"インクラインダンベルプレス", set:"3セット × 10-12回", q:"インクラインダンベルプレス フォーム 解説"},
+      {name:"ショルダープレス", set:"3セット × 10-12回", q:"ショルダープレス ダンベル フォーム 初心者"},
+      {name:"サイドレイズ", set:"3セット × 15回", q:"サイドレイズ フォーム 三角筋 効かせ方"},
+      {name:"トライセプスプレスダウン", set:"3セット × 12回", q:"トライセプスプレスダウン フォーム 三頭"}
+    ]},
+    {label:"仕上げ（脂肪燃焼）", ex:[{name:"縄跳び（エア縄跳び可）", set:"3分 × 2セット", v:"5KvhPsN8lWw"}]}
+  ]},
+  2:{day:"火", title:"自宅・格闘技コンディショニング", sub:"シャドー＋HIIT＋体幹", tag:"home", ico:"🥊", blocks:[
+    {label:"メイン", ex:[
+      {name:"シャドーボクシング", set:"3分 × 5ラウンド", v:"nzaJVos5stA"},
+      {name:"飛ばないHIIT（マンションOK）", set:"6分", v:"akZsNTks_jI"}
+    ]},
+    {label:"体幹", ex:[
+      {name:"レッグレイズ", set:"3セット × 15回", q:"レッグレイズ 腹筋 下腹部 やり方"},
+      {name:"プランク", set:"60秒 × 3セット", q:"プランク 体幹 正しいやり方"}
+    ]}
+  ]},
+  3:{day:"水", title:"ジム・プル", sub:"背中・二頭＋有酸素", tag:"gym", ico:"🏋️", blocks:[
+    {label:"ウォームアップ", ex:[{name:"軽い有酸素＋肩甲骨ほぐし 5分", set:"5分", q:"背中 トレーニング前 ウォームアップ 肩甲骨"}]},
+    {label:"メイン", ex:[
+      {name:"デッドリフト", set:"3セット × 6-8回", v:"wawP_5xeDVg"},
+      {name:"ラットプルダウン", set:"4セット × 10-12回", v:"mG1T29lwrNI"},
+      {name:"シーテッドロウ", set:"3セット × 12回", q:"シーテッドロウ 背中 フォーム 初心者"},
+      {name:"ダンベルカール", set:"3セット × 12回", q:"ダンベルカール フォーム 二頭筋"}
+    ]},
+    {label:"仕上げ", ex:[{name:"縄跳び or 早歩き", set:"5分", v:"5KvhPsN8lWw"}]}
+  ]},
+  4:{day:"木", title:"自宅・体幹＆HIIT", sub:"脂肪燃焼サーキット", tag:"home", ico:"🔥", blocks:[
+    {label:"メイン", ex:[
+      {name:"飛ばないHIIT（地獄の4分）", set:"4分", v:"UZJOLmMDqu8"},
+      {name:"マウンテンクライマー", set:"30秒 × 4セット", q:"マウンテンクライマー 正しいやり方"},
+      {name:"バイシクルクランチ", set:"3セット × 20回", q:"バイシクルクランチ 腹筋 やり方"},
+      {name:"プランク", set:"60秒 × 3セット", q:"プランク 体幹 正しいやり方"}
+    ]}
+  ]},
+  5:{day:"金", title:"ジム・レッグ", sub:"脚・尻＋有酸素", tag:"gym", ico:"🦵", blocks:[
+    {label:"ウォームアップ", ex:[{name:"軽い有酸素＋股関節ほぐし 5分", set:"5分", q:"脚トレ前 ウォームアップ 股関節"}]},
+    {label:"メイン", ex:[
+      {name:"スクワット", set:"4セット × 8-10回", v:"SFnfYPktYBU"},
+      {name:"レッグプレス", set:"3セット × 12回", q:"レッグプレス フォーム 初心者"},
+      {name:"ルーマニアンデッドリフト", set:"3セット × 10回", q:"ルーマニアンデッドリフト ハムストリング フォーム"},
+      {name:"レッグカール", set:"3セット × 12回", q:"レッグカール フォーム"},
+      {name:"カーフレイズ", set:"3セット × 20回", q:"カーフレイズ ふくらはぎ やり方"}
+    ]},
+    {label:"仕上げ", ex:[{name:"縄跳び", set:"3分 × 2セット", v:"5KvhPsN8lWw"}]}
+  ]},
+  6:{day:"土", title:"脂肪燃焼DAY（有酸素ロング）", sub:"自宅 or 外", tag:"home", ico:"🏃", blocks:[
+    {label:"メイン", ex:[
+      {name:"シャドーボクシング", set:"3分 × 6ラウンド", v:"nzaJVos5stA"},
+      {name:"縄跳び", set:"3分 × 5セット", v:"5KvhPsN8lWw"},
+      {name:"早歩きウォーキング", set:"30〜40分", q:"早歩き ウォーキング 脂肪燃焼 効果"}
+    ]}
+  ]},
+  0:{day:"日", title:"休養・リカバリー", sub:"回復も練習のうち", tag:"rest", ico:"🛌", blocks:[
+    {label:"リカバリー", ex:[
+      {name:"全身ストレッチ", set:"10分", v:"gMIlRS_lbYA"},
+      {name:"軽いウォーキング", set:"20〜30分", q:"ウォーキング 軽い 有酸素 回復"},
+      {name:"睡眠を7時間以上とる", set:"今日はしっかり休む", q:"睡眠の質 上げる方法"}
+    ]}
+  ]}
+};
+
+const MEAL_PLAN = [
+  {t:"🌅 朝食", k:"約450kcal", d:"卵3個（スクランブル）＋オートミール40g＋ギリシャヨーグルト＋バナナ1本。時間がなければプロテイン1杯でもOK。"},
+  {t:"🍱 昼食", k:"約600kcal", d:"鶏むね肉200g（皮なし）＋白米150g＋具沢山の味噌汁＋サラダ。炭水化物は昼まで。"},
+  {t:"🥤 間食", k:"約200kcal", d:"プロテイン1杯＋素焼きアーモンド10粒。または ゆで卵・するめ・サラダチキン。"},
+  {t:"🍽️ 夕食", k:"約550kcal", d:"赤身肉 or 魚 150〜200g＋豆腐＋温野菜・サラダ。夜は炭水化物を控えめに。"}
+];
+
+const RULES = [
+  "毎食タンパク質を“手のひら1枚分”（鶏むね・魚・卵・豆腐）",
+  "揚げ物・お菓子・ジュース・甘い飲み物・酒をやめる",
+  "白米は昼まで。夜は炭水化物を控える",
+  "よく噛んで20分以上かけて食べる",
+  "寝る2時間前までに夕食を済ませる",
+  "水を1日2〜3L、こまめに飲む"
+];
+
+const RECIPES = [
+  {name:"減量の1日の食事メニュー", meta:"高タンパク・低脂質の組み立て方", q:"減量 1日の食事 メニュー 高タンパク 低脂質"},
+  {name:"鶏むね肉 やわらか減量レシピ", meta:"パサつかせない調理法", q:"鶏むね肉 レシピ 減量 しっとり"},
+  {name:"オートミールの朝食", meta:"簡単・腹持ち◎", q:"オートミール 朝食 ダイエット レシピ 簡単"}
+];
+
+/* ====================== 状態管理 ====================== */
+const KEY="bodymente_v1";
+let S = load();
+function load(){ try{ return Object.assign(base(), JSON.parse(localStorage.getItem(KEY))||{}); }catch(e){ return base(); } }
+function base(){ return {checks:{}, weights:[], startKg:90, goalKg:75, theme:"dark"}; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(S)); }
+
+function todayKey(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function dayChecks(){ const k=todayKey(); if(!S.checks[k]) S.checks[k]={}; return S.checks[k]; }
+
+/* ====================== 描画 ====================== */
+const WD=["日","月","火","水","木","金","土"];
+function fmtHeaderDate(){ const d=new Date(); return `${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]}) ・ 今日のメニュー`; }
+
+function exItem(prefix, idx, obj){
+  const c=dayChecks(), id=prefix+"_"+idx, on=!!c[id];
+  const hasVideo = obj.v || obj.q;
+  const meta = obj.set ? `<b>${obj.set}</b>` : (obj.meta||"");
+  let right="";
+  if(hasVideo) right=`<a class="yt" href="${vlink(obj)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">▶ 動画</a>`;
+  else if(obj.tab) right=`<button class="yt alt" onclick="event.stopPropagation();go('${obj.tab}')">開く ›</button>`;
+  return `<div class="item ${on?'done':''}" onclick="toggle('${id}')">
+    <div class="chk ${on?'on':''}"></div>
+    <div class="body"><div class="name">${obj.name}</div>${meta?`<div class="meta">${meta}</div>`:""}</div>
+    ${right}</div>`;
+}
+
+function renderToday(){
+  document.getElementById("hdDate").textContent = fmtHeaderDate();
+  document.getElementById("morningList").innerHTML = MORNING.map((m,i)=>exItem("mo",i,m)).join("");
+  const p=PROGRAM[new Date().getDay()];
+  document.getElementById("trainIco").textContent=p.ico;
+  document.getElementById("trainTitle").textContent=p.title;
+  document.getElementById("trainSub").textContent=p.sub;
+  const tg=document.getElementById("trainTag"); tg.className="tag "+p.tag; tg.textContent={gym:"GYM",home:"自宅",rest:"休養"}[p.tag];
+  document.getElementById("heroBadge").textContent=`今日 ${p.day}曜`;
+  document.getElementById("heroTitle").textContent=p.title;
+  document.getElementById("heroSub").textContent=p.sub+" ／ 上から順にこなすだけ。";
+  let html="", n=0;
+  p.blocks.forEach(b=>{ html+=`<div class="blk-label">${b.label}</div>`; b.ex.forEach(ex=>{ html+=exItem("tr",n,ex); n++; }); });
+  document.getElementById("trainList").innerHTML=html;
+  document.getElementById("mealList").innerHTML = MEALS_TODAY.map((m,i)=>exItem("me",i,m)).join("");
+  updateRing();
+}
+
+function totalTodayItems(){ const p=PROGRAM[new Date().getDay()]; let t=MORNING.length+MEALS_TODAY.length; p.blocks.forEach(b=> t+=b.ex.length); return t; }
+function doneTodayCount(){ return Object.values(dayChecks()).filter(Boolean).length; }
+function updateRing(){
+  const tot=totalTodayItems(), done=Math.min(doneTodayCount(),tot), pct = tot? Math.round(done/tot*100):0;
+  const C=2*Math.PI*26, fg=document.getElementById("ringFg");
+  fg.style.strokeDasharray=C; fg.style.strokeDashoffset=C*(1-pct/100);
+  fg.setAttribute("stroke", pct>=100?"#ffc94b":"#3ddc97");
+  document.getElementById("ringLbl").textContent=pct+"%";
+}
+function toggle(id){ const c=dayChecks(); c[id]=!c[id]; save(); renderToday(); if(doneTodayCount()===totalTodayItems()) toast("🎉 今日のメニュー完了！"); }
+
+let selDay=new Date().getDay();
+function renderWeek(){
+  const order=[1,2,3,4,5,6,0];
+  document.getElementById("weekPills").innerHTML=order.map(d=>{
+    const p=PROGRAM[d], isT=d===new Date().getDay();
+    return `<div class="dpill ${isT?'today':''} ${d===selDay?'sel':''}" onclick="selDay=${d};renderWeek()">
+      <div class="d">${p.day}</div><div class="ty">${{gym:"ジム",home:"自宅",rest:"休養"}[p.tag]}</div></div>`;
+  }).join("");
+  const p=PROGRAM[selDay];
+  let html=`<div class="card"><div class="card-h"><div class="ico">${p.ico}</div>
+      <div style="flex:1"><div class="t">${p.day}曜：${p.title}</div><div class="s">${p.sub}</div></div>
+      <span class="tag ${p.tag}">${{gym:"GYM",home:"自宅",rest:"休養"}[p.tag]}</span></div>`;
+  p.blocks.forEach(b=>{ html+=`<div class="blk-label">${b.label}</div>`;
+    b.ex.forEach(ex=>{ const r=(ex.v||ex.q)?`<a class="yt" href="${vlink(ex)}" target="_blank" rel="noopener">▶ 動画</a>`:"";
+      html+=`<div class="item"><div class="body"><div class="name">${ex.name}</div><div class="meta"><b>${ex.set||""}</b></div></div>${r}</div>`; });
+  });
+  html+=`</div>`;
+  document.getElementById("weekDetail").innerHTML=html;
+}
+
+function renderMeal(){
+  document.getElementById("mealPlan").innerHTML=MEAL_PLAN.map(m=>
+    `<div class="item"><div class="body"><div class="name">${m.t} <span style="color:var(--accent2);font-size:13px;font-weight:800">${m.k}</span></div><div class="meta">${m.d}</div></div></div>`).join("");
+  document.getElementById("rulesList").innerHTML=RULES.map(r=>`<li>${r}</li>`).join("");
+  document.getElementById("recipeList").innerHTML=RECIPES.map(r=>
+    `<div class="item"><div class="body"><div class="name">${r.name}</div><div class="meta">${r.meta}</div></div><a class="yt" href="${YTS(r.q)}" target="_blank" rel="noopener">▶ 動画</a></div>`).join("");
+}
+
+function addWeight(){
+  const v=parseFloat(document.getElementById("wInput").value);
+  if(!v||v<30||v>250){ toast("正しい体重を入力してね"); return; }
+  const k=todayKey(), ex=S.weights.find(w=>w.d===k);
+  if(ex) ex.kg=v; else S.weights.push({d:k,kg:v});
+  S.weights.sort((a,b)=>a.d<b.d?-1:1); save();
+  document.getElementById("wInput").value=""; renderWeight(); toast("記録しました 💪");
+}
+function renderWeight(){
+  const ws=S.weights, now = ws.length? ws[ws.length-1].kg : S.startKg;
+  document.getElementById("wNow").innerHTML = (ws.length?now:"―");
+  document.getElementById("wLeft").innerHTML = Math.max(0,(now-S.goalKg)).toFixed(1);
+  const lost=(S.startKg-now);
+  document.getElementById("wLost").innerHTML = (lost>=0?lost.toFixed(1):"0.0");
+  const tot=S.startKg-S.goalKg, prog= tot>0? Math.max(0,Math.min(100,(S.startKg-now)/tot*100)):0;
+  document.getElementById("goalBar").style.width=prog+"%";
+  document.getElementById("goalNote").innerHTML=`${S.startKg}kg → <b style="color:var(--accent)">${S.goalKg}kg</b> まで <b>${prog.toFixed(0)}%</b> 達成`;
+  if(ws.length){
+    let html="";
+    for(let i=ws.length-1;i>=0;i--){ const w=ws[i], prev= i>0?ws[i-1].kg:null; let dl="";
+      if(prev!=null){ const d=(w.kg-prev); dl=`<span class="delta ${d<=0?'down':'up'}">${d<=0?'▼':'▲'}${Math.abs(d).toFixed(1)}</span>`; }
+      html+=`<div class="wlog"><span class="dt">${w.d.slice(5).replace("-","/")}</span><span><b>${w.kg}</b> kg ${dl}</span></div>`; }
+    document.getElementById("wList").innerHTML=html;
+  }else document.getElementById("wList").innerHTML=`<div class="note">まだ記録がありません。</div>`;
+  drawChart();
+}
+function drawChart(){
+  const ws=S.weights, box=document.getElementById("chart");
+  if(ws.length<2){ box.innerHTML=`<div class="note">2回以上記録するとグラフが表示されます。</div>`; return; }
+  const W=480,H=210,pad=36;
+  const kgs=ws.map(w=>w.kg).concat([S.goalKg]); let mn=Math.min(...kgs), mx=Math.max(...kgs);
+  const range=(mx-mn)||1; mn-=range*0.15; mx+=range*0.15;
+  const x=i=> pad + i*(W-pad*1.2)/(ws.length-1), y=v=> H-pad - (v-mn)/(mx-mn)*(H-pad*1.7);
+  let path=ws.map((w,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(w.kg).toFixed(1)}`).join(" ");
+  let dots=ws.map((w,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(w.kg).toFixed(1)}" r="4" fill="var(--accent)"/>`).join("");
+  const gy=y(S.goalKg).toFixed(1), area=`${path} L${x(ws.length-1).toFixed(1)},${H-pad} L${x(0).toFixed(1)},${H-pad} Z`;
+  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--accent)" stop-opacity="0.35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${pad}" y1="${gy}" x2="${W}" y2="${gy}" stroke="var(--ok)" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="${pad}" y="${gy-7}" fill="var(--ok)" font-size="12" font-weight="800">目標 ${S.goalKg}kg</text>
+    <path d="${area}" fill="url(#g)"/><path d="${path}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/>${dots}
+    <text x="${x(0).toFixed(1)}" y="${H-12}" fill="var(--mut)" font-size="11" text-anchor="middle">${ws[0].d.slice(5).replace("-","/")}</text>
+    <text x="${x(ws.length-1).toFixed(1)}" y="${H-12}" fill="var(--mut)" font-size="11" text-anchor="middle">${ws[ws.length-1].d.slice(5).replace("-","/")}</text></svg>`;
+}
+
+function setTheme(th){ S.theme=th; save(); applyTheme(); }
+function applyTheme(){
+  document.body.setAttribute("data-theme", S.theme);
+  document.querySelector('meta[name=theme-color]').setAttribute("content", S.theme==="light"?"#f3f5f9":"#0d0e12");
+  document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on", b.dataset.th===S.theme));
+}
+function setGoal(){
+  const v=parseFloat(document.getElementById("goalInput").value);
+  if(!v||v<40||v>200){ toast("正しい目標体重を入力してね"); return; }
+  S.goalKg=v; save(); document.getElementById("setGoal2").textContent=v+" kg";
+  document.getElementById("goalInput").value=""; renderWeight(); toast("目標を更新しました");
+}
+function resetToday(){ if(!confirm("今日のチェックをすべて外しますか？")) return; S.checks[todayKey()]={}; save(); renderToday(); toast("リセットしました"); }
+function clearAll(){ if(!confirm("体重記録・チェックを含む全データを削除します。よろしいですか？")) return; const th=S.theme; S=base(); S.theme=th; save(); renderAll(); toast("削除しました"); }
+
+function go(tab){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on", b.dataset.tab===tab));
+  window.scrollTo(0,0);
+  if(tab==="week") renderWeek(); if(tab==="meal") renderMeal(); if(tab==="weight") renderWeight();
+}
+let toastT;
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1800); }
+
+function renderAll(){
+  applyTheme();
+  document.getElementById("setStart").textContent=S.startKg+" kg";
+  document.getElementById("setGoal2").textContent=S.goalKg+" kg";
+  renderToday(); renderMeal(); renderWeight();
+}
+renderAll();
+
+/* ===== Service Worker 登録（オフライン動作・https/サーバー配信時のみ有効） ===== */
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
