@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0c0f0d">
+<title>oc_to_bar（金澤）｜公式LINE・ご予約フォーム</title>
+<meta name="description" content="金澤のバー oc_to_bar 専用の公式LINEのご案内と、来店予約・お問い合わせフォームです。">
+<style>
+  :root{
+    --bg:#0c0f0d; --bg2:#121613; --card:#171c18; --card2:#20261f;
+    --line:#2b332c; --txt:#f4f6f2; --sub:#a9b3a8; --mut:#77816f;
+    --green:#06c755; --green2:#05b34c; --gold:#e8c366;
+    --shadow:0 8px 26px rgba(0,0,0,.42);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+    background:var(--bg); color:var(--txt); line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:560px; margin:0 auto; padding:0 18px;}
+
+  /* ===== ヒーロー ===== */
+  .hero{
+    padding:calc(env(safe-area-inset-top) + 46px) 18px 34px; text-align:center;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(6,199,85,.16), transparent 60%),
+      linear-gradient(180deg,#10140f,#0c0f0d);
+    border-bottom:1px solid var(--line);
+  }
+  .hero .brand{
+    font-size:13px; font-weight:900; letter-spacing:.28em; color:var(--gold);
+    text-transform:uppercase;
+  }
+  .hero h1{font-size:30px; font-weight:900; margin:10px 0 6px; letter-spacing:.02em;}
+  .hero h1 .g{color:var(--green);}
+  .hero p{font-size:14px; color:var(--sub); font-weight:600; margin:0; }
+  .hero .badge{
+    display:inline-block; margin-top:16px; font-size:12px; font-weight:900;
+    background:rgba(6,199,85,.14); color:var(--green); border:1px solid rgba(6,199,85,.35);
+    padding:6px 16px; border-radius:999px; letter-spacing:.06em;
+  }
+
+  /* ===== カード ===== */
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:22px;
+    padding:22px 20px; margin-top:20px; box-shadow:var(--shadow);
+  }
+  .card h2{font-size:18px; font-weight:900; margin:0 0 4px; display:flex; align-items:center; gap:9px;}
+  .card h2::before{content:""; width:5px; height:20px; border-radius:3px; background:linear-gradient(var(--green),var(--gold));}
+  .card .lead{font-size:13.5px; color:var(--sub); font-weight:600; margin:0 0 16px;}
+  .step-tag{font-size:11px; font-weight:900; color:var(--gold); letter-spacing:.14em; margin-bottom:4px;}
+
+  /* ===== LINEボタン/QR ===== */
+  .line-btn{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    background:var(--green); color:#fff; text-decoration:none;
+    font-size:17px; font-weight:900; padding:17px 20px; border-radius:16px;
+    box-shadow:0 6px 18px rgba(6,199,85,.35); transition:.15s;
+  }
+  .line-btn:active{transform:scale(.97); background:var(--green2);}
+  .line-btn .mk{
+    width:26px; height:26px; border-radius:7px; background:#fff; color:var(--green);
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; letter-spacing:0;
+  }
+  .qr-box{display:flex; align-items:center; gap:16px; margin-top:16px;}
+  .qr-box img{width:128px; height:128px; border-radius:14px; background:#fff; padding:7px; flex:0 0 auto;}
+  .qr-box .note{font-size:12.5px; color:var(--mut); font-weight:600;}
+  .oa-id{font-family:ui-monospace,monospace; color:var(--gold); font-weight:800;}
+
+  /* ===== フォーム ===== */
+  .fld{margin-bottom:15px;}
+  .fld label{display:block; font-size:13px; font-weight:800; color:var(--sub); margin-bottom:7px;}
+  .fld label .req{color:var(--green); font-size:11px; font-weight:900; margin-left:6px; letter-spacing:.05em;}
+  .fld input, .fld select, .fld textarea{
+    width:100%; background:var(--card2); border:1.5px solid var(--line); border-radius:14px;
+    color:var(--txt); font-size:16px; font-weight:700; padding:14px 15px; outline:none;
+    font-family:inherit; appearance:none;
+  }
+  .fld textarea{min-height:104px; resize:vertical; line-height:1.6;}
+  .fld input:focus, .fld select:focus, .fld textarea:focus{border-color:var(--green);}
+  .fld input.err, .fld select.err{border-color:#ff5d5d;}
+  .fld .hint{font-size:12px; color:var(--mut); font-weight:600; margin-top:5px;}
+  .fld-row{display:flex; gap:12px;}
+  .fld-row .fld{flex:1; min-width:0;}
+  .seg{display:flex; flex-wrap:wrap; gap:8px;}
+  .seg button{
+    border:1.5px solid var(--line); background:var(--card2); color:var(--sub);
+    font-weight:800; font-size:13.5px; padding:10px 15px; border-radius:999px; cursor:pointer; transition:.13s;
+    font-family:inherit;
+  }
+  .seg button.on{background:rgba(6,199,85,.16); border-color:var(--green); color:var(--green);}
+  .agree{
+    display:flex; gap:11px; align-items:flex-start; margin:18px 0 16px;
+    font-size:13px; color:var(--sub); font-weight:600; cursor:pointer;
+  }
+  .agree input{width:20px; height:20px; margin:1px 0 0; accent-color:var(--green); flex:0 0 auto;}
+  .send-btn{
+    width:100%; border:none; cursor:pointer;
+    background:var(--green); color:#fff; font-size:17px; font-weight:900;
+    padding:17px 20px; border-radius:16px; font-family:inherit;
+    box-shadow:0 6px 18px rgba(6,199,85,.35); transition:.15s;
+  }
+  .send-btn:active{transform:scale(.97);}
+  .send-btn:disabled{background:var(--card2); color:var(--mut); box-shadow:none; cursor:not-allowed;}
+  .copy-btn{
+    width:100%; margin-top:11px; border:1.5px solid var(--line); cursor:pointer;
+    background:none; color:var(--sub); font-size:14px; font-weight:800;
+    padding:13px 20px; border-radius:14px; font-family:inherit;
+  }
+  .form-note{font-size:12.5px; color:var(--mut); font-weight:600; margin-top:14px; line-height:1.7;}
+
+  /* ===== 設定未完了バナー ===== */
+  .setup-warn{
+    margin-top:20px; border:1.5px dashed var(--gold); border-radius:16px;
+    background:rgba(232,195,102,.08); padding:15px 16px;
+    font-size:13px; color:var(--gold); font-weight:700; line-height:1.7;
+  }
+  .setup-warn code{font-family:ui-monospace,monospace; background:rgba(0,0,0,.35); padding:2px 7px; border-radius:6px;}
+
+  .toast{
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(8px);
+    background:var(--txt); color:var(--bg); font-weight:900; font-size:14.5px;
+    padding:13px 24px; border-radius:999px; opacity:0; pointer-events:none;
+    transition:.25s; z-index:50; box-shadow:0 8px 24px rgba(0,0,0,.4); max-width:86vw; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  footer{text-align:center; font-size:12px; color:var(--mut); font-weight:600; margin-top:34px; line-height:1.8;}
+  footer a{color:var(--mut);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="brand">oc_to_bar — Kanazawa</div>
+  <h1>公式<span class="g">LINE</span>のご案内</h1>
+  <p>金澤のバー「oc_to_bar」のご予約・お問い合わせは、専用の公式LINEで承ります。</p>
+  <span class="badge">友だち追加 → フォーム送信の2ステップ</span>
+</div>
+
+<div class="wrap">
+
+  <div class="setup-warn" id="setupWarn" style="display:none">
+    ⚠️ 管理者向け：公式LINEアカウントが未設定です。<br>
+    このファイル冒頭の <code>CONFIG.LINE_OA_ID</code> と <code>CONFIG.ADD_FRIEND_URL</code> に、
+    LINE公式アカウントのベーシックID（@〜）と友だち追加URL（lin.ee/〜）を設定してください。
+  </div>
+
+  <!-- STEP 1: 友だち追加 -->
+  <div class="card">
+    <div class="step-tag">STEP 1</div>
+    <h2>公式LINEを友だち追加</h2>
+    <p class="lead">まずは oc_to_bar 専用の公式LINEを友だち追加してください。最新情報・イベント案内もこちらから届きます。</p>
+    <a class="line-btn" id="addBtn" href="#" target="_blank" rel="noopener">
+      <span class="mk">LINE</span> 友だち追加する
+    </a>
+    <div class="qr-box" id="qrBox">
+      <img id="qrImg" alt="oc_to_bar 公式LINE 友だち追加QRコード" src="">
+      <div class="note">スマホ以外でご覧の場合は、LINEアプリのQRコードリーダーでこちらを読み取ってください。<br>ID検索：<span class="oa-id" id="oaIdLabel"></span></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: フォーム -->
+  <div class="card">
+    <div class="step-tag">STEP 2</div>
+    <h2>ご予約・お問い合わせフォーム</h2>
+    <p class="lead">送信ボタンを押すと、入力内容が公式LINEのトークにセットされた状態でLINEが開きます。そのまま送信するだけで完了です。</p>
+
+    <form id="oaForm" novalidate>
+      <div class="fld-row">
+        <div class="fld">
+          <label for="fName">お名前<span class="req">必須</span></label>
+          <input id="fName" type="text" autocomplete="name" placeholder="山田 太郎">
+        </div>
+        <div class="fld">
+          <label for="fKana">フリガナ</label>
+          <input id="fKana" type="text" placeholder="ヤマダ タロウ">
+        </div>
+      </div>
+
+      <div class="fld">
+        <label>ご用件<span class="req">必須</span></label>
+        <div class="seg" id="purposeSeg">
+          <button type="button" data-v="来店予約" class="on">🍸 来店予約</button>
+          <button type="button" data-v="貸切・イベント相談">🎉 貸切・イベント相談</button>
+          <button type="button" data-v="お問い合わせ">💬 お問い合わせ</button>
+        </div>
+      </div>
+
+      <div class="fld-row" id="visitRow">
+        <div class="fld">
+          <label for="fDate">ご希望日</label>
+          <input id="fDate" type="date">
+        </div>
+        <div class="fld">
+          <label for="fTime">時間</label>
+          <input id="fTime" type="time" step="900">
+        </div>
+        <div class="fld" style="flex:0 0 92px">
+          <label for="fNum">人数</label>
+          <select id="fNum">
+            <option value="">-</option>
+            <option>1名</option><option>2名</option><option>3名</option><option>4名</option>
+            <option>5名</option><option>6名以上</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fld">
+        <label for="fTel">お電話番号（任意）</label>
+        <input id="fTel" type="tel" autocomplete="tel" inputmode="tel" placeholder="090-0000-0000">
+        <div class="hint">ご予約確認のご連絡はLINEトークで行います。お急ぎの場合のみご記入ください。</div>
+      </div>
+
+      <div class="fld">
+        <label for="fMsg">メッセージ・ご質問</label>
+        <textarea id="fMsg" placeholder="例：カウンター席を希望します／誕生日のお祝いで利用したいです など"></textarea>
+      </div>
+
+      <label class="agree">
+        <input type="checkbox" id="fAgree">
+        <span>入力した内容が oc_to_bar 公式LINEのトークとして送信されることに同意します。内容はご予約・お問い合わせ対応の目的にのみ使用されます。</span>
+      </label>
+
+      <button class="send-btn" type="submit" id="sendBtn">LINEで送信する →</button>
+      <button class="copy-btn" type="button" id="copyBtn">📋 入力内容をコピーする（LINEが開かない場合）</button>
+      <p class="form-note">
+        ※ 送信にはSTEP 1の友だち追加が必要です。LINEが開かない場合は「入力内容をコピー」して、公式LINEのトークに貼り付けて送信してください。<br>
+        ※ このフォームの内容はサーバーには保存されません。
+      </p>
+    </form>
+  </div>
+
+  <footer>
+    oc_to_bar（金澤）公式LINE受付ページ<br>
+    <a href="../">ボディメンテはこちら</a>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   設定（管理者向け）
+   LINE公式アカウント作成後、以下の2つを書き換えてください。
+   - LINE_OA_ID       : ベーシックID（例 "@012abcde"）
+   - ADD_FRIEND_URL   : 友だち追加URL（例 "https://lin.ee/xxxxxxx"）
+     ※ 未設定の場合は LINE_OA_ID から自動生成します。
+   ============================================================ */
+const CONFIG = {
+  LINE_OA_ID: "",        // 例: "@012abcde"
+  ADD_FRIEND_URL: ""     // 例: "https://lin.ee/xxxxxxx"
+};
+
+const $ = id => document.getElementById(id);
+const configured = /^@[a-z0-9_.-]+$/i.test(CONFIG.LINE_OA_ID);
+const addUrl = CONFIG.ADD_FRIEND_URL ||
+  (configured ? "https://line.me/R/ti/p/" + encodeURIComponent(CONFIG.LINE_OA_ID) : "");
+
+/* ---- 友だち追加ボタン & QR ---- */
+if (configured || CONFIG.ADD_FRIEND_URL) {
+  $("addBtn").href = addUrl;
+  $("qrImg").src = "https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=" + encodeURIComponent(addUrl);
+  $("qrImg").onerror = () => { $("qrBox").style.display = "none"; };
+  $("oaIdLabel").textContent = CONFIG.LINE_OA_ID || "（友だち追加URLをご利用ください）";
+} else {
+  $("setupWarn").style.display = "block";
+  $("qrBox").style.display = "none";
+  $("oaIdLabel").textContent = "（準備中）";
+  $("addBtn").addEventListener("click", e => {
+    e.preventDefault();
+    toast("公式LINEは現在準備中です 🙏");
+  });
+}
+
+/* ---- ご用件セグメント ---- */
+let purpose = "来店予約";
+$("purposeSeg").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  purpose = b.dataset.v;
+  [...$("purposeSeg").children].forEach(x => x.classList.toggle("on", x === b));
+  $("visitRow").style.display = (purpose === "お問い合わせ") ? "none" : "";
+});
+
+/* ---- 下書きの自動保存 ---- */
+const DRAFT_KEY = "oc_to_bar_form_draft";
+const FIELDS = ["fName","fKana","fDate","fTime","fNum","fTel","fMsg"];
+try {
+  const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}");
+  FIELDS.forEach(k => { if (d[k]) $(k).value = d[k]; });
+} catch (_) {}
+const saveDraft = () => {
+  const d = {};
+  FIELDS.forEach(k => d[k] = $(k).value);
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (_) {}
+};
+FIELDS.forEach(k => $(k).addEventListener("input", saveDraft));
+
+/* ---- メッセージ本文の組み立て ---- */
+function buildMessage() {
+  const L = [];
+  L.push("【oc_to_bar フォーム】");
+  L.push("ご用件：" + purpose);
+  L.push("お名前：" + $("fName").value.trim() + ($("fKana").value.trim() ? "（" + $("fKana").value.trim() + "）" : ""));
+  if (purpose !== "お問い合わせ") {
+    if ($("fDate").value) L.push("希望日：" + $("fDate").value.replaceAll("-", "/"));
+    if ($("fTime").value) L.push("時間：" + $("fTime").value);
+    if ($("fNum").value)  L.push("人数：" + $("fNum").value);
+  }
+  if ($("fTel").value.trim()) L.push("電話：" + $("fTel").value.trim());
+  if ($("fMsg").value.trim()) L.push("メッセージ：\n" + $("fMsg").value.trim());
+  return L.join("\n");
+}
+
+function validate() {
+  let ok = true;
+  $("fName").classList.toggle("err", !$("fName").value.trim());
+  if (!$("fName").value.trim()) ok = false;
+  if (!ok) toast("お名前を入力してください");
+  else if (!$("fAgree").checked) { ok = false; toast("送信への同意にチェックを入れてください"); }
+  return ok;
+}
+
+/* ---- 送信：公式LINEトークを本文入りで開く ---- */
+$("oaForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!validate()) return;
+  const text = buildMessage();
+  if (configured) {
+    const url = "https://line.me/R/oaMessage/" + encodeURIComponent(CONFIG.LINE_OA_ID) + "/?" + encodeURIComponent(text);
+    window.open(url, "_blank", "noopener");
+    toast("LINEを開いています… そのまま送信してください");
+  } else {
+    copyText(text, "公式LINE準備中のため、内容をコピーしました");
+  }
+});
+
+/* ---- コピー（フォールバック） ---- */
+$("copyBtn").addEventListener("click", () => {
+  if (!validate()) return;
+  copyText(buildMessage(), "入力内容をコピーしました。LINEのトークに貼り付けてください");
+});
+
+function copyText(text, msg) {
+  const done = () => toast(msg);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => legacyCopy(text, done));
+  } else legacyCopy(text, done);
+}
+function legacyCopy(text, done) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); done(); } catch (_) { toast("コピーできませんでした"); }
+  document.body.removeChild(ta);
+}
+
+/* ---- トースト ---- */
+let toastTimer;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+/* ---- 希望日の最小値 = 今日 ---- */
+$("fDate").min = new Date().toISOString().slice(0, 10);
+</script>
+</body>
+</html>
