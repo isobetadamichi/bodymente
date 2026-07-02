@@ -1,5 +1,5 @@
 // ボディメンテ Service Worker — オフラインで動かすためのキャッシュ
-const CACHE = "bodymente-v1.1";
+const CACHE = "bodymente-v2.3";
 const ASSETS = [
   "./",
   "./index.html",
