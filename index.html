@@ -315,6 +315,32 @@
   .sheet-fig .fig-ph{position:absolute; top:12px; right:12px; display:flex; gap:5px;}
   .sheet-fig .fig-ph i{width:8px; height:8px; border-radius:50%; background:rgba(0,0,0,.22); transition:background .3s;}
   .sheet-fig .fig-ph i.on{background:var(--accent);}
+
+  /* ===== v2.4 ログイン＆引き継ぎ ===== */
+  .lock{position:fixed; inset:0; z-index:75; background:var(--bg); display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center;}
+  .lock.show{display:flex; animation:fade .3s ease;}
+  .lock .logo{font-size:54px; animation:floaty 3s ease-in-out infinite;}
+  .lock .who{font-size:22px; font-weight:900; margin-top:10px;}
+  .lock .msg{font-size:13px; color:var(--sub); font-weight:700; margin-top:4px; min-height:20px;}
+  .pin-dots{display:flex; gap:14px; margin:20px 0 8px;}
+  .pin-dots i{width:16px; height:16px; border-radius:50%; border:2px solid var(--mut); transition:.15s;}
+  .pin-dots i.on{background:var(--accent); border-color:var(--accent); transform:scale(1.15);}
+  .pin-dots.err{animation:shake .45s;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-11px)}40%{transform:translateX(11px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+  .keypad{display:grid; grid-template-columns:repeat(3,72px); gap:13px; margin-top:12px;}
+  .keypad button{width:72px; height:72px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--txt); font-size:26px; font-weight:800; cursor:pointer; box-shadow:var(--shadow); transition:.12s;}
+  .keypad button:active{transform:scale(.9); background:var(--card2);}
+  .keypad button.ghosty{background:none; border:none; box-shadow:none; font-size:16px; font-weight:900; color:var(--sub);}
+  .lock .alt-link{margin-top:22px; font-size:13.5px; color:var(--blue); font-weight:800; background:none; border:none; cursor:pointer;}
+  .lock .alt-link.mut{margin-top:10px; color:var(--mut);}
+  .code-box{width:100%; min-height:110px; background:var(--card2); border:1.5px solid var(--line); border-radius:14px; color:var(--txt); font-size:12px; padding:12px; word-break:break-all; font-family:ui-monospace,monospace; outline:none; line-height:1.5;}
+  .ios-banner{position:fixed; left:12px; right:12px; bottom:calc(92px + env(safe-area-inset-bottom)); z-index:40; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 46px 14px 15px; box-shadow:0 12px 32px rgba(0,0,0,.45); display:none;}
+  .ios-banner.show{display:block; animation:riseIn .5s .6s both;}
+  .ios-banner .t{font-size:14.5px; font-weight:900;}
+  .ios-banner .d{font-size:12.5px; color:var(--sub); font-weight:600; margin-top:3px; line-height:1.55;}
+  .ios-banner .x{position:absolute; top:10px; right:10px; width:28px; height:28px; border-radius:50%; background:var(--card2); border:none; color:var(--sub); font-weight:900; cursor:pointer;}
+  .qr-wrap{display:flex; align-items:center; gap:14px; margin-top:12px;}
+  .qr-wrap img{width:132px; height:132px; border-radius:12px; background:#fff; padding:6px;}
 </style>
 </head>
 <body data-theme="dark">
@@ -448,15 +474,29 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-h"><div class="ico">📲</div><div class="t">ホーム画面に追加</div></div>
-      <p class="lead" style="margin:0">Safariの共有ボタン → 「ホーム画面に追加」で、本物のアプリのように全画面で使えます。毎朝これを開くだけ。</p>
+      <div class="card-h"><div class="ico">🔐</div><div class="t">ログイン（PINロック）</div></div>
+      <div id="authBody"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">🔁</div><div class="t">別の端末へデータ引き継ぎ</div></div>
+      <p class="lead" style="margin:0 0 11px">①下のボタンでコードを作成 → ②LINEやメモで新しい端末に送る → ③新端末のログイン画面/初期設定の「別の端末から引き継ぐ」に貼り付け。</p>
+      <button class="btn full" onclick="makeTransfer()">🔑 引き継ぎコードを作成</button>
+      <div id="transferOut" style="margin-top:11px"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico">📲</div><div class="t">iPhoneにダウンロード（ホーム画面に追加）</div></div>
+      <p class="lead" style="margin:0">iPhoneのSafariでこのページを開き、共有ボタン<b style="color:var(--txt)">［↑］→「ホーム画面に追加」</b>で本物のアプリのようにインストールされます。</p>
+      <div class="qr-wrap">
+        <img alt="インストール用QR" src="https://api.qrserver.com/v1/create-qr-code/?size=264x264&data=https%3A%2F%2Fisobetadamichi.github.io%2Fbodymente%2F" onerror="this.parentElement.style.display='none'">
+        <div class="note">パソコンで見ている場合は、iPhoneのカメラでこのQRを読み取るとアプリのページが開きます。</div>
+      </div>
     </div>
     <div class="card">
       <div class="card-h"><div class="ico">🧹</div><div class="t">データ管理</div></div>
       <button class="btn ghost full" style="margin-bottom:11px" onclick="resetToday()">今日のチェックをリセット</button>
       <button class="btn ghost full" onclick="clearAll()">全データを削除</button>
     </div>
-    <p class="note" style="text-align:center; margin-top:22px">ボディメンテ v2.3 ・ データはこの端末内に保存されます<br>やり方データ: ExerciseDB / hasaneyldrm exercises-dataset を日本語化<br>動きイメージ画像: yuhonas/free-exercise-db（パブリックドメイン）</p>
+    <p class="note" style="text-align:center; margin-top:22px">ボディメンテ v2.4 ・ データはこの端末内に保存されます<br>やり方データ: ExerciseDB / hasaneyldrm exercises-dataset を日本語化<br>動きイメージ画像: yuhonas/free-exercise-db（パブリックドメイン）</p>
   </section>
 
 </div>
@@ -495,6 +535,7 @@
         </div>
       </div>
       <button class="btn full" style="margin-top:10px" onclick="obNext(2)">次へ →</button>
+      <button class="btn ghost full" style="margin-top:11px" onclick="openTransferIn()">🔁 別の端末からデータを引き継ぐ</button>
     </div>
 
     <div id="ob2" style="display:none">
@@ -527,6 +568,37 @@
     <div class="ob-lead">タップで今日のメニューを入れ替えます。</div>
     <div class="pick-grid" id="pickGrid"></div>
   </div>
+</div>
+
+<!-- ===== ログイン（PINロック） ===== -->
+<div class="lock" id="lock">
+  <div class="logo">🥊</div>
+  <div class="who" id="lockWho">おかえり！</div>
+  <div class="msg" id="lockMsg">PINを入力してください</div>
+  <div class="pin-dots" id="pinDots"><i></i><i></i><i></i><i></i></div>
+  <div class="keypad" id="keypad"></div>
+  <button class="alt-link" onclick="openTransferIn()">🔁 別の端末から引き継ぐ</button>
+  <button class="alt-link mut" onclick="forgotPin()">PINを忘れた場合</button>
+</div>
+
+<!-- ===== 引き継ぎコード入力 ===== -->
+<div class="overlay" id="transferIn" style="z-index:76">
+  <button class="ob-close" onclick="closeTransferIn()">✕</button>
+  <div class="inner">
+    <div class="ob-step">データ引き継ぎ</div>
+    <div class="ob-title">🔁 別の端末から引き継ぐ</div>
+    <div class="ob-lead">元の端末の「設定 → 別の端末へデータ引き継ぎ」で作ったコードを、下に貼り付けてください。プロフィール・体重記録・達成記録がすべて移ります。</div>
+    <textarea class="code-box" id="tCodeIn" placeholder="BM2.xxxxxxxx... をここに貼り付け"></textarea>
+    <button class="btn full" style="margin-top:14px" onclick="importTransfer()">📥 このコードでログイン（復元）</button>
+    <p class="note" style="margin-top:12px">※ 今この端末にあるデータは、コードの内容で上書きされます。</p>
+  </div>
+</div>
+
+<!-- ===== iOSインストール案内 ===== -->
+<div class="ios-banner" id="iosBanner">
+  <button class="x" onclick="hideIosBanner()">✕</button>
+  <div class="t">📲 iPhoneにダウンロードできます</div>
+  <div class="d">下の共有ボタン<b>［↑］</b>→<b>「ホーム画面に追加」</b>で、アプリとしてインストール。全画面＆オフラインでも動きます。</div>
 </div>
 
 <!-- ===== 種目詳細シート ===== -->
@@ -1448,13 +1520,162 @@ function go(tab){
 let toastT;
 function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
 
+/* ====================== v2.4 ログイン（PINロック） ====================== */
+async function sha256hex(str){
+  const b = new TextEncoder().encode(str);
+  return [...new Uint8Array(await crypto.subtle.digest("SHA-256", b))].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+let pinEntry = "";
+function buildKeypad(){
+  const keys = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
+  document.getElementById("keypad").innerHTML = keys.map(k=>{
+    if(k==="") return `<button class="ghosty" disabled></button>`;
+    if(k==="⌫") return `<button class="ghosty" onclick="pinKey('bs')">⌫</button>`;
+    return `<button onclick="pinKey('${k}')">${k}</button>`;
+  }).join("");
+}
+function renderPinDots(){
+  document.querySelectorAll("#pinDots i").forEach((d,i)=>d.classList.toggle("on", i<pinEntry.length));
+}
+async function pinKey(k){
+  const dots = document.getElementById("pinDots");
+  dots.classList.remove("err");
+  if(k==="bs"){ pinEntry = pinEntry.slice(0,-1); renderPinDots(); return; }
+  if(pinEntry.length>=4) return;
+  pinEntry += k; renderPinDots();
+  if(pinEntry.length===4){
+    const h = await sha256hex("bodymente:"+pinEntry);
+    if(S.auth && h===S.auth.pinHash){
+      document.getElementById("lock").classList.remove("show");
+      pinEntry=""; renderPinDots();
+      toast(`💪 おかえり、${S.auth.name}さん！`);
+    } else {
+      dots.classList.add("err");
+      document.getElementById("lockMsg").textContent = "PINが違います";
+      setTimeout(()=>{ pinEntry=""; renderPinDots(); }, 350);
+    }
+  }
+}
+function showLock(){
+  if(!(S.auth && S.auth.enabled && S.auth.pinHash)) return;
+  document.getElementById("lockWho").textContent = `おかえり、${S.auth.name}さん`;
+  document.getElementById("lockMsg").textContent = "PINを入力してください";
+  pinEntry=""; renderPinDots(); buildKeypad();
+  document.getElementById("lock").classList.add("show");
+}
+function forgotPin(){
+  if(!confirm("PINロックを解除しますか？\nデータ（記録・プロフィール）はそのまま残ります。")) return;
+  if(S.auth) S.auth.enabled=false; save();
+  document.getElementById("lock").classList.remove("show");
+  renderProfile(); toast("ログインをオフにしました");
+}
+function renderAuth(){
+  const el = document.getElementById("authBody");
+  if(S.auth && S.auth.enabled){
+    el.innerHTML = `
+      <div class="note" style="margin-bottom:10px">✅ <b style="color:var(--ok)">オン</b>｜ユーザー：<b style="color:var(--txt)">${S.auth.name}</b>。アプリを開くたびにPINでログインします。</div>
+      <button class="btn ghost full" style="margin-bottom:10px" onclick="setupAuth()">名前・PINを変更する</button>
+      <button class="btn ghost full" onclick="disableAuth()">ログインをオフにする</button>`;
+  } else {
+    el.innerHTML = `
+      <p class="lead" style="margin:0 0 11px">名前と4桁PINを設定すると、アプリを開くときにログイン画面が出ます（このスマホ内でのかんたんな保護です）。</p>
+      <div class="winput"><input id="authName" type="text" placeholder="名前（例: いそべ）" maxlength="10"></div>
+      <div class="winput"><input id="authPin" type="tel" inputmode="numeric" maxlength="4" placeholder="4桁のPIN（例: 1234）"></div>
+      <button class="btn full" onclick="setupAuthSave()">🔐 ログインをオンにする</button>`;
+  }
+}
+function setupAuth(){ S.auth.enabled=false; save(); renderAuth(); }
+async function setupAuthSave(){
+  const name = (document.getElementById("authName").value||"").trim();
+  const pin = (document.getElementById("authPin").value||"").trim();
+  if(!name){ toast("名前を入力してね"); return; }
+  if(!/^\d{4}$/.test(pin)){ toast("PINは数字4桁で入力してね"); return; }
+  S.auth = { name, pinHash: await sha256hex("bodymente:"+pin), enabled:true };
+  save(); renderAuth();
+  toast(`🔐 設定完了！次回から${name}さんでログイン`);
+}
+function disableAuth(){
+  if(!confirm("ログイン（PINロック）をオフにしますか？")) return;
+  S.auth.enabled=false; save(); renderAuth(); toast("オフにしました");
+}
+
+/* ====================== v2.4 データ引き継ぎ ====================== */
+function u8ToB64(u8){ let s=""; for(let i=0;i<u8.length;i+=0x8000) s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000)); return btoa(s); }
+function b64ToU8(b){ const bin=atob(b); const a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) a[i]=bin.charCodeAt(i); return a; }
+async function makeTransfer(){
+  const json = JSON.stringify(S);
+  let code;
+  try{
+    if(window.CompressionStream){
+      const st = new Blob([json]).stream().pipeThrough(new CompressionStream("gzip"));
+      const rd = st.getReader(); const ps=[]; let tot=0;
+      while(true){ const {done,value}=await rd.read(); if(done) break; ps.push(value); tot+=value.length; }
+      const u8=new Uint8Array(tot); let o=0; for(const p of ps){ u8.set(p,o); o+=p.length; }
+      code = "BM2." + u8ToB64(u8);
+    } else {
+      code = "BM1." + btoa(unescape(encodeURIComponent(json)));
+    }
+  }catch(e){ code = "BM1." + btoa(unescape(encodeURIComponent(json))); }
+  document.getElementById("transferOut").innerHTML = `
+    <textarea class="code-box" id="tCodeOut" readonly>${code}</textarea>
+    <button class="btn ghost full" style="margin-top:10px" onclick="copyTransfer()">📋 コードをコピー</button>
+    <p class="note" style="margin-top:8px">このコードをLINEの「自分だけのグループ」やメモで新端末へ送ってください。</p>`;
+}
+function copyTransfer(){
+  const t = document.getElementById("tCodeOut");
+  t.select(); t.setSelectionRange(0, 999999);
+  const done = ()=>toast("コピーしました 📋 新端末に貼り付けてね");
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(done).catch(()=>{ document.execCommand("copy"); done(); });
+  else { document.execCommand("copy"); done(); }
+}
+function openTransferIn(){ document.getElementById("transferIn").classList.add("show"); }
+function closeTransferIn(){ document.getElementById("transferIn").classList.remove("show"); }
+async function importTransfer(){
+  const code = (document.getElementById("tCodeIn").value||"").trim();
+  try{
+    let json;
+    if(code.startsWith("BM2.")){
+      const u8 = b64ToU8(code.slice(4));
+      const st = new Blob([u8]).stream().pipeThrough(new DecompressionStream("gzip"));
+      const rd = st.getReader(); const ps=[]; let tot=0;
+      while(true){ const {done,value}=await rd.read(); if(done) break; ps.push(value); tot+=value.length; }
+      const out=new Uint8Array(tot); let o=0; for(const p of ps){ out.set(p,o); o+=p.length; }
+      json = new TextDecoder().decode(out);
+    } else if(code.startsWith("BM1.")){
+      json = decodeURIComponent(escape(atob(code.slice(4))));
+    } else throw new Error("bad prefix");
+    const obj = JSON.parse(json);
+    if(!obj || typeof obj!=="object" || !("weights" in obj)) throw new Error("bad data");
+    S = Object.assign(base(), obj);
+    save();
+    PROGRAM = genProgram();
+    closeTransferIn(); closeOnboard();
+    document.getElementById("lock").classList.remove("show");
+    renderAll();
+    const who = S.auth && S.auth.name ? S.auth.name+"さん" : "";
+    toast(`✅ 引き継ぎ完了！おかえり${who ? "、"+who : ""}！`);
+  }catch(e){
+    toast("コードが正しくないみたい。全部コピーできているか確認してね");
+  }
+}
+
+/* ====================== v2.4 iOSインストール案内 ====================== */
+function checkIosBanner(){
+  const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+  const standalone = navigator.standalone===true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+  if(isIOS && !standalone && !S.iosBannerHidden) document.getElementById("iosBanner").classList.add("show");
+}
+function hideIosBanner(){ S.iosBannerHidden=true; save(); document.getElementById("iosBanner").classList.remove("show"); }
+
 function renderAll(){
   applyTheme();
   PROGRAM = genProgram();
-  renderToday(); renderMeal(); renderLog(); renderProfile();
+  renderToday(); renderMeal(); renderLog(); renderProfile(); renderAuth();
 }
 renderAll();
 if(!S.profile) openOnboard(false);
+showLock();
+checkIosBanner();
 
 /* ===== Service Worker 登録（オフライン動作・https/サーバー配信時のみ有効） ===== */
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
