@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#9e2a2b">
+<title>広東バー（金沢・彦三）｜ご予約・お問い合わせ</title>
+<meta name="description" content="金沢市彦三町のバー「広東バー」公式LINE受付。トーク形式でご予約・お問い合わせができます。">
+<style>
+  :root{
+    --hd:#9e2a2b; --hd-txt:#fff;
+    --bg:#f6e8cf;
+    --bot:#ffffff; --bot-txt:#2a2018;
+    --me:#8de055; --me-txt:#1c2e10;
+    --sub:#8a7a63; --line:#e3d3b4;
+    --menu-bg:#7c1d1e; --tile:#fff8ec; --tile-line:#e8d3a8;
+    --gold:#c8912e; --green:#06c755;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+    background:#3a2a1a; color:var(--bot-txt); line-height:1.55;
+    display:flex; flex-direction:column; height:100dvh; overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:560px; width:100%; margin:0 auto; height:100dvh; display:flex; flex-direction:column; background:var(--bg); position:relative;}
+
+  /* ===== ヘッダー（LINE風） ===== */
+  header{
+    flex:0 0 auto; background:var(--hd); color:var(--hd-txt);
+    padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;
+    display:flex; align-items:center; gap:11px; z-index:10;
+    box-shadow:0 1px 8px rgba(0,0,0,.22);
+  }
+  header .back{font-size:22px; font-weight:900; opacity:.9; text-decoration:none; color:var(--hd-txt); padding:2px 4px;}
+  header .av{width:38px; height:38px; border-radius:50%; background:#fff3dd; display:flex; align-items:center; justify-content:center; font-size:21px; flex:0 0 auto; border:2px solid rgba(255,255,255,.5);}
+  header .tt{flex:1; min-width:0;}
+  header .tt .n{font-size:16.5px; font-weight:900; letter-spacing:.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  header .tt .s{font-size:11px; opacity:.85; font-weight:700;}
+
+  /* ===== トーク画面 ===== */
+  .chat{
+    flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:14px 12px 10px; position:relative;
+    background:
+      radial-gradient(140% 100% at 50% 0%, rgba(200,145,46,.10), transparent 55%),
+      repeating-linear-gradient(45deg, rgba(158,42,43,.035) 0 14px, transparent 14px 42px),
+      var(--bg);
+  }
+  .day{
+    text-align:center; margin:4px 0 12px;
+  }
+  .day span{background:rgba(90,60,20,.16); color:#6d5636; font-size:11px; font-weight:800; padding:4px 13px; border-radius:999px;}
+
+  .row{display:flex; margin:9px 0; align-items:flex-end; gap:7px; animation:pop .28s ease both;}
+  @keyframes pop{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+  .row .av{width:32px; height:32px; border-radius:50%; background:#fff; border:1.5px solid var(--tile-line); display:flex; align-items:center; justify-content:center; font-size:17px; flex:0 0 auto; align-self:flex-start;}
+  .row .stack{max-width:76%; display:flex; flex-direction:column; gap:6px;}
+  .bub{
+    background:var(--bot); color:var(--bot-txt); border-radius:4px 18px 18px 18px;
+    padding:11px 14px; font-size:14.5px; font-weight:600; box-shadow:0 1px 3px rgba(90,60,20,.14);
+    white-space:pre-wrap; word-break:break-word; width:fit-content; max-width:100%;
+  }
+  .row.me{justify-content:flex-end;}
+  .row.me .bub{background:var(--me); color:var(--me-txt); border-radius:18px 4px 18px 18px;}
+  .time{font-size:10px; color:#a08d6e; font-weight:700; flex:0 0 auto; margin-bottom:2px;}
+
+  /* カード型メッセージ */
+  .msg-card{
+    background:#fff; border-radius:16px; overflow:hidden; width:min(300px,100%);
+    box-shadow:0 2px 8px rgba(90,60,20,.16);
+  }
+  .msg-card .mc-hero{height:76px; display:flex; align-items:center; justify-content:center; font-size:40px;
+    background:linear-gradient(135deg,#9e2a2b,#c8912e); }
+  .msg-card .mc-body{padding:12px 14px 6px;}
+  .msg-card .mc-t{font-size:15px; font-weight:900;}
+  .msg-card .mc-d{font-size:13px; color:#6d5f4b; font-weight:600; margin-top:4px; white-space:pre-wrap;}
+  .msg-card .mc-btns{padding:6px 8px 8px; border-top:1px solid #f0e6d2; margin-top:9px;}
+  .msg-card .mc-btn{
+    display:block; width:100%; text-align:center; background:none; border:none; cursor:pointer;
+    color:#2f7bff; font-size:14.5px; font-weight:800; padding:11px 6px; border-radius:10px;
+    text-decoration:none; font-family:inherit;
+  }
+  .msg-card .mc-btn:active{background:#f2f4f8;}
+  .msg-card img.qr{display:block; width:150px; height:150px; margin:12px auto 2px; border-radius:10px; background:#fff; border:1px solid #eee;}
+
+  /* 入力中アニメ */
+  .typing{display:inline-flex; gap:4px; padding:13px 15px;}
+  .typing i{width:7px; height:7px; border-radius:50%; background:#c4ac80; animation:blink 1.1s infinite;}
+  .typing i:nth-child(2){animation-delay:.18s}
+  .typing i:nth-child(3){animation-delay:.36s}
+  @keyframes blink{0%,60%,100%{opacity:.3; transform:none} 30%{opacity:1; transform:translateY(-3px)}}
+
+  /* ===== クイックリプライ ===== */
+  .qr-row{
+    flex:0 0 auto; display:flex; gap:8px; overflow-x:auto; padding:8px 12px;
+    background:transparent; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    position:relative; z-index:5;
+  }
+  .qr-row::-webkit-scrollbar{display:none;}
+  .qr-row:empty{display:none;}
+  .chip{
+    flex:0 0 auto; background:#fffdf6; border:1.5px solid var(--gold); color:#8a5a10;
+    font-size:13.5px; font-weight:800; padding:9px 16px; border-radius:999px; cursor:pointer;
+    box-shadow:0 2px 6px rgba(90,60,20,.12); font-family:inherit; animation:pop .25s ease both;
+  }
+  .chip:active{transform:scale(.94); background:#fff3d8;}
+
+  /* ===== 入力バー（LINE風） ===== */
+  .input-bar{
+    flex:0 0 auto; display:flex; align-items:center; gap:9px;
+    background:#fffdf8; border-top:1px solid var(--line); padding:8px 12px;
+    z-index:6;
+  }
+  .input-bar input{
+    flex:1; min-width:0; background:#f3ecda; border:1.5px solid transparent; border-radius:999px;
+    font-size:15px; font-weight:600; padding:11px 16px; outline:none; font-family:inherit; color:var(--bot-txt);
+  }
+  .input-bar input:focus{border-color:var(--gold); background:#fff;}
+  .input-bar .send{
+    flex:0 0 auto; width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
+    background:var(--hd); color:#fff; font-size:17px; font-weight:900;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .input-bar .send:disabled{opacity:.35;}
+  .input-bar .send:active{transform:scale(.92);}
+
+  /* ===== リッチメニュー ===== */
+  .menu-toggle{
+    flex:0 0 auto; text-align:center; background:#fffdf8; border-top:1px solid var(--line);
+    font-size:13.5px; font-weight:900; color:#6d5636; padding:9px; cursor:pointer; user-select:none;
+  }
+  .richmenu{
+    flex:0 0 auto; background:var(--menu-bg); padding:9px 9px calc(9px + env(safe-area-inset-bottom));
+    display:grid; grid-template-columns:1fr 1fr 1.1fr; grid-template-rows:1fr 1fr; gap:8px;
+    max-height:262px; transition:max-height .3s ease, padding .3s ease; overflow:hidden;
+  }
+  .richmenu.closed{max-height:0; padding-top:0; padding-bottom:0;}
+  .tile{
+    background:var(--tile); border:1.5px solid var(--tile-line); border-radius:14px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    padding:10px 6px; cursor:pointer; text-align:center; font-family:inherit;
+  }
+  .tile:active{transform:scale(.96);}
+  .tile .ti{font-size:30px; line-height:1;}
+  .tile .tn{font-size:12.5px; font-weight:900; color:#4a3418; line-height:1.3;}
+  .tile .go{font-size:10px; font-weight:900; color:#fff; background:#3a2a1a; border-radius:999px; padding:3px 10px; letter-spacing:.05em;}
+  .tile.big{
+    grid-row:1 / span 2; grid-column:3;
+    background:linear-gradient(165deg,#fff4dd,#ffe3b0);
+    border-color:var(--gold); gap:8px;
+  }
+  .tile.big .ti{font-size:46px; animation:sway 3.2s ease-in-out infinite;}
+  @keyframes sway{0%,100%{transform:rotate(-4deg)} 50%{transform:rotate(5deg) translateY(-3px)}}
+  .tile.big .tn{font-size:16px; color:#7c1d1e;}
+  .tile.big .go{background:var(--hd);}
+
+  /* 管理者向け未設定バナー */
+  .setup-warn{
+    margin:0 12px 10px; border:1.5px dashed var(--gold); border-radius:13px;
+    background:#fff8e6; padding:10px 13px; font-size:12px; color:#8a5a10; font-weight:700; line-height:1.6;
+  }
+  .setup-warn code{font-family:ui-monospace,monospace; background:rgba(0,0,0,.07); padding:1px 6px; border-radius:5px;}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(8px);
+    background:#2a2018; color:#fff; font-weight:800; font-size:13.5px;
+    padding:12px 22px; border-radius:999px; opacity:0; pointer-events:none;
+    transition:.25s; z-index:99; max-width:86vw; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,.4);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <a class="back" href="../" aria-label="戻る">‹</a>
+    <div class="av">🏮</div>
+    <div class="tt">
+      <div class="n">広東バー｜ご予約・お問い合わせ</div>
+      <div class="s">自動で返信しています ・ 金沢市彦三町</div>
+    </div>
+  </header>
+
+  <div class="chat" id="chat">
+    <div class="day"><span id="dayLabel">今日</span></div>
+  </div>
+
+  <div class="qr-row" id="quickRow"></div>
+
+  <div class="input-bar">
+    <input id="msgInput" type="text" placeholder="メッセージを入力" autocomplete="off">
+    <button class="send" id="sendBtn" aria-label="送信">↑</button>
+  </div>
+
+  <div class="menu-toggle" id="menuToggle">メニュー ▼</div>
+  <div class="richmenu" id="richmenu">
+    <button class="tile" data-act="hours"><span class="ti">🕐</span><span class="tn">営業時間<br>定休日</span><span class="go">今すぐチェック ▶</span></button>
+    <button class="tile" data-act="access"><span class="ti">📍</span><span class="tn">アクセス<br>（彦三町）</span><span class="go">今すぐチェック ▶</span></button>
+    <button class="tile big" data-act="reserve"><span class="ti">🍸</span><span class="tn">ご予約する</span><span class="go">まずは気軽にどうぞ ▶</span></button>
+    <button class="tile" data-act="menu"><span class="ti">🥃</span><span class="tn">メニュー<br>料金</span><span class="go">今すぐチェック ▶</span></button>
+    <button class="tile" data-act="addfriend"><span class="ti">💚</span><span class="tn">公式LINEを<br>友だち追加</span><span class="go">今すぐチェック ▶</span></button>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   設定（管理者向け）— ここだけ書き換えれば全体に反映されます
+   ------------------------------------------------------------
+   1) LINE公式アカウント作成後：
+      LINE_OA_ID     : ベーシックID（例 "@012abcde"）
+      ADD_FRIEND_URL : 友だち追加URL（例 "https://lin.ee/xxxxxxx"）
+   2) 店舗情報（分かり次第、正しい内容に更新してください）
+   ============================================================ */
+const CONFIG = {
+  LINE_OA_ID: "",        // 例: "@012abcde"
+  ADD_FRIEND_URL: ""     // 例: "https://lin.ee/xxxxxxx"
+};
+const STORE = {
+  name: "広東バー",
+  area: "石川県金沢市彦三町",
+  address: "石川県金沢市彦三町（詳しい場所は公式LINEでご案内します）",
+  mapUrl: "https://www.google.com/maps/search/" + encodeURIComponent("石川県金沢市彦三町 広東バー"),
+  hours: "営業時間は公式LINEにてご案内しています。",
+  menuInfo: "カクテル・ウイスキー・紹興酒など、広東の味に合うお酒とおつまみをご用意しています。\n詳しいメニュー・料金は公式LINEでお気軽にお尋ねください。"
+};
+
+const $ = id => document.getElementById(id);
+const chat = $("chat"), quickRow = $("quickRow"), input = $("msgInput"), sendBtn = $("sendBtn");
+const configured = /^@[a-z0-9_.-]+$/i.test(CONFIG.LINE_OA_ID);
+const addUrl = CONFIG.ADD_FRIEND_URL || (configured ? "https://line.me/R/ti/p/" + encodeURIComponent(CONFIG.LINE_OA_ID) : "");
+
+/* ---------- 日付ラベル ---------- */
+const now = new Date();
+$("dayLabel").textContent = (now.getMonth()+1) + "/" + now.getDate() + "（" + "日月火水木金土"[now.getDay()] + "）";
+const timeStr = () => {
+  const d = new Date();
+  return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0");
+};
+
+/* ---------- メッセージ描画 ---------- */
+function scrollBottom(){ chat.scrollTop = chat.scrollHeight; }
+
+function botRow(){
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `<div class="av">🏮</div><div class="stack"></div><div class="time">${timeStr()}</div>`;
+  chat.appendChild(row);
+  return row.querySelector(".stack");
+}
+function addBot(text, stack){
+  const s = stack || botRow();
+  const b = document.createElement("div");
+  b.className = "bub";
+  b.textContent = text;
+  s.appendChild(b);
+  scrollBottom();
+  return s;
+}
+function addBotHTML(html, stack){
+  const s = stack || botRow();
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  s.appendChild(div.firstElementChild);
+  scrollBottom();
+  return s;
+}
+function addMe(text){
+  const row = document.createElement("div");
+  row.className = "row me";
+  row.innerHTML = `<div class="time">${timeStr()}</div><div class="stack"></div>`;
+  const b = document.createElement("div");
+  b.className = "bub";
+  b.textContent = text;
+  row.querySelector(".stack").appendChild(b);
+  chat.appendChild(row);
+  scrollBottom();
+}
+
+/* 入力中… → コールバック（連打防止のためキュー処理） */
+let botBusy = Promise.resolve();
+function botSay(fn, delay){
+  botBusy = botBusy.then(() => new Promise(res => {
+    const s = botRow();
+    const t = document.createElement("div");
+    t.className = "bub typing";
+    t.innerHTML = "<i></i><i></i><i></i>";
+    s.appendChild(t); scrollBottom();
+    setTimeout(() => { t.remove(); fn(s); res(); }, delay || 650);
+  }));
+  return botBusy;
+}
+
+/* ---------- クイックリプライ ---------- */
+function setChips(list){
+  quickRow.innerHTML = "";
+  list.forEach(c => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = c.label;
+    b.onclick = () => { if (c.keep !== true) quickRow.innerHTML = ""; c.fn(); };
+    quickRow.appendChild(b);
+  });
+}
+const IDLE_CHIPS = [
+  {label:"🍸 予約する", fn:() => startReserve()},
+  {label:"🕐 営業時間", fn:() => doAction("hours")},
+  {label:"📍 アクセス", fn:() => doAction("access")},
+  {label:"💬 質問・相談する", fn:() => startConsult()}
+];
+
+/* ---------- 公式LINEへ送る ---------- */
+function sendToLine(text){
+  if (configured) {
+    const url = "https://line.me/R/oaMessage/" + encodeURIComponent(CONFIG.LINE_OA_ID) + "/?" + encodeURIComponent(text);
+    window.open(url, "_blank", "noopener");
+    toast("LINEを開いています… トーク画面でそのまま送信してください");
+  } else {
+    copyText(text, "公式LINE準備中のため、内容をコピーしました。\n開設後にトークへ貼り付けてください");
+  }
+}
+function copyText(text, msg){
+  const done = () => toast(msg);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => legacyCopy(text, done));
+  } else legacyCopy(text, done);
+}
+function legacyCopy(text, done){
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); done(); } catch(_) { toast("コピーできませんでした"); }
+  document.body.removeChild(ta);
+}
+
+/* ---------- 予約フロー（チャット形式のフォーム） ---------- */
+let flow = null;   // null | {step, data}
+function startReserve(){
+  addMe("予約する");
+  flow = { step:"name", data:{ 用件:"来店予約" } };
+  botSay(s => {
+    addBot("ありがとうございます🍸 ご予約ですね！\nいくつか質問にお答えください。", s);
+    addBot("まず、お名前を教えてください。", s);
+    setChips([{label:"✕ 予約をやめる", fn:cancelFlow}]);
+    input.focus();
+  });
+}
+function askDate(){
+  botSay(s => {
+    addBot("希望日はいつですか？", s);
+    const today = new Date(), fmt = d => (d.getMonth()+1)+"/"+d.getDate()+"（"+"日月火水木金土"[d.getDay()]+"）";
+    const t1 = new Date(today); t1.setDate(today.getDate()+1);
+    const t2 = new Date(today); t2.setDate(today.getDate()+2);
+    setChips([
+      {label:"今日 " + fmt(today), fn:() => answer(fmt(today))},
+      {label:"明日 " + fmt(t1), fn:() => answer(fmt(t1))},
+      {label:"あさって " + fmt(t2), fn:() => answer(fmt(t2))},
+      {label:"✕ 予約をやめる", fn:cancelFlow}
+    ]);
+  });
+}
+function askTime(){
+  botSay(s => {
+    addBot("何時ごろのご来店ですか？", s);
+    setChips(["19:00","20:00","21:00","22:00"].map(t => ({label:t+"ごろ", fn:() => answer(t+"ごろ")}))
+      .concat([{label:"✕ 予約をやめる", fn:cancelFlow}]));
+  });
+}
+function askNum(){
+  botSay(s => {
+    addBot("何名さまですか？", s);
+    setChips(["1名","2名","3名","4名","5名以上"].map(n => ({label:n, fn:() => answer(n)}))
+      .concat([{label:"✕ 予約をやめる", fn:cancelFlow}]));
+  });
+}
+function askNote(){
+  botSay(s => {
+    addBot("ご要望・伝えておきたいことがあればどうぞ！（なければ「特になし」でOKです）", s);
+    setChips([
+      {label:"特になし", fn:() => answer("特になし")},
+      {label:"✕ 予約をやめる", fn:cancelFlow}
+    ]);
+    input.focus();
+  });
+}
+function confirmReserve(){
+  const d = flow.data;
+  const summary = `お名前：${d.名前}\n希望日：${d.日付}\n時間：${d.時間}\n人数：${d.人数}\nご要望：${d.要望}`;
+  botSay(s => {
+    addBotHTML(`<div class="msg-card">
+      <div class="mc-hero">🍸</div>
+      <div class="mc-body">
+        <div class="mc-t">ご予約内容の確認</div>
+        <div class="mc-d">${summary.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</div>
+      </div>
+      <div class="mc-btns">
+        <button class="mc-btn" onclick="finishReserve()">✅ この内容で公式LINEに送る</button>
+        <button class="mc-btn" onclick="copyReserve()">📋 内容をコピーする</button>
+      </div>
+    </div>`, s);
+    setChips([{label:"🔁 最初からやり直す", fn:() => { flow=null; startReserve(); }},
+              {label:"✕ 予約をやめる", fn:cancelFlow}]);
+  });
+}
+function reserveText(){
+  const d = flow.data;
+  return `【${STORE.name} ご予約】\nお名前：${d.名前}\n希望日：${d.日付}\n時間：${d.時間}\n人数：${d.人数}\nご要望：${d.要望}`;
+}
+function finishReserve(){
+  sendToLine(reserveText());
+  botSay(s => {
+    addBot("送信画面を開きました！LINEのトークでそのまま送信してください📨\nお店からの返信をもってご予約確定となります。", s);
+    if (!configured) addBot("（公式LINEは現在準備中のため、内容をコピーしています。開設まで少々お待ちください🙏）", s);
+    setChips(IDLE_CHIPS);
+  });
+  flow = null;
+}
+function copyReserve(){
+  copyText(reserveText(), "ご予約内容をコピーしました。LINEのトークに貼り付けてください");
+}
+function cancelFlow(){
+  flow = null;
+  botSay(s => {
+    addBot("かしこまりました！またいつでもどうぞ🏮", s);
+    setChips(IDLE_CHIPS);
+  });
+}
+
+/* ---------- 質問・相談フロー ---------- */
+function startConsult(){
+  addMe("質問・相談する");
+  flow = { step:"consult", data:{} };
+  botSay(s => {
+    addBot("ご質問・ご相談をメッセージでどうぞ！\n入力して送信すると、公式LINEのトークにセットされます💬", s);
+    setChips([{label:"✕ やめる", fn:cancelFlow}]);
+    input.focus();
+  });
+}
+
+/* ---------- フリー入力の処理 ---------- */
+function answer(text){
+  addMe(text);
+  handleAnswer(text);
+}
+function handleAnswer(text){
+  if (!flow) {
+    // フロー外の自由入力 → 相談として扱う
+    flow = { step:"consult-confirm", data:{ msg:text } };
+    botSay(s => {
+      addBot("メッセージありがとうございます！\nこの内容を公式LINEに送りますか？", s);
+      setChips([
+        {label:"📨 公式LINEに送る", fn:() => { sendConsult(text); }},
+        {label:"✕ やめる", fn:cancelFlow}
+      ]);
+    });
+    return;
+  }
+  switch (flow.step) {
+    case "name":
+      flow.data.名前 = text; flow.step = "date"; askDate(); break;
+    case "date":
+      flow.data.日付 = text; flow.step = "time"; askTime(); break;
+    case "time":
+      flow.data.時間 = text; flow.step = "num"; askNum(); break;
+    case "num":
+      flow.data.人数 = text; flow.step = "note"; askNote(); break;
+    case "note":
+      flow.data.要望 = text; flow.step = "confirm"; confirmReserve(); break;
+    case "consult":
+      sendConsult(text); break;
+    case "consult-confirm":
+      sendConsult(flow.data.msg + "\n" + text); break;
+  }
+}
+function sendConsult(text){
+  sendToLine(`【${STORE.name} お問い合わせ】\n${text}`);
+  botSay(s => {
+    addBot("送信画面を開きました！そのまま送信してください📨\n営業時間内に順次お返事します。", s);
+    if (!configured) addBot("（公式LINEは現在準備中のため、内容をコピーしています🙏）", s);
+    setChips(IDLE_CHIPS);
+  });
+  flow = null;
+}
+
+/* ---------- リッチメニューの応答 ---------- */
+function doAction(act){
+  switch (act) {
+    case "hours":
+      addMe("営業時間・定休日");
+      botSay(s => {
+        addBot(`🕐 ${STORE.name} の営業時間\n\n${STORE.hours}`, s);
+        addBot("ご来店前に公式LINEでご確認いただくのが確実です👌", s);
+        setChips(IDLE_CHIPS);
+      });
+      break;
+    case "access":
+      addMe("アクセス");
+      botSay(s => {
+        addBotHTML(`<div class="msg-card">
+          <div class="mc-hero">📍</div>
+          <div class="mc-body">
+            <div class="mc-t">アクセス</div>
+            <div class="mc-d">${STORE.address}</div>
+          </div>
+          <div class="mc-btns">
+            <a class="mc-btn" href="${STORE.mapUrl}" target="_blank" rel="noopener">🗺 地図アプリで開く</a>
+          </div>
+        </div>`, s);
+        setChips(IDLE_CHIPS);
+      });
+      break;
+    case "menu":
+      addMe("メニュー・料金");
+      botSay(s => {
+        addBot(`🥃 ${STORE.menuInfo}`, s);
+        setChips(IDLE_CHIPS.concat([{label:"💬 メニューについて聞く", fn:startConsult}]));
+      });
+      break;
+    case "addfriend":
+      addMe("公式LINEを友だち追加");
+      botSay(s => {
+        if (addUrl) {
+          addBotHTML(`<div class="msg-card">
+            <div class="mc-hero">💚</div>
+            <div class="mc-body">
+              <div class="mc-t">${STORE.name} 公式LINE</div>
+              <div class="mc-d">友だち追加で、ご予約・最新情報の受け取りができます。${configured ? "\nID検索：" + CONFIG.LINE_OA_ID : ""}</div>
+              <img class="qr" alt="友だち追加QR" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(addUrl)}" onerror="this.remove()">
+            </div>
+            <div class="mc-btns">
+              <a class="mc-btn" href="${addUrl}" target="_blank" rel="noopener">💚 友だち追加する</a>
+            </div>
+          </div>`, s);
+        } else {
+          addBot("公式LINEアカウントは現在準備中です🙏\n開設まで、ご予約はこのページの「予約する」からどうぞ！", s);
+        }
+        setChips(IDLE_CHIPS);
+      });
+      break;
+    case "reserve":
+      startReserve();
+      break;
+  }
+}
+$("richmenu").addEventListener("click", e => {
+  const t = e.target.closest(".tile");
+  if (t) doAction(t.dataset.act);
+});
+
+/* ---------- 入力バー ---------- */
+function submitInput(){
+  const v = input.value.trim();
+  if (!v) return;
+  input.value = "";
+  answer(v);
+}
+sendBtn.addEventListener("click", submitInput);
+input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); submitInput(); } });
+
+/* ---------- メニュー開閉 ---------- */
+const rm = $("richmenu"), mt = $("menuToggle");
+mt.addEventListener("click", () => {
+  const closed = rm.classList.toggle("closed");
+  mt.textContent = closed ? "メニュー ▲" : "メニュー ▼";
+  setTimeout(scrollBottom, 320);
+});
+
+/* ---------- トースト ---------- */
+let toastTimer;
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+/* ---------- 起動時のあいさつ ---------- */
+botSay(s => {
+  addBot("＼ようこそ／\n金沢・彦三町のバー「広東バー」です🏮", s);
+  addBot("ご予約・ご質問はこのトークでどうぞ。\n下のメニューをタップするか、ボタンから選んでください👇", s);
+}, 500).then(() => {
+  if (!configured && !CONFIG.ADD_FRIEND_URL) {
+    const w = document.createElement("div");
+    w.className = "setup-warn";
+    w.innerHTML = `⚠️ 管理者向け：公式LINEアカウントが未設定です。このファイル冒頭の <code>CONFIG.LINE_OA_ID</code> と <code>CONFIG.ADD_FRIEND_URL</code> を設定してください（それまでフォームは「内容コピー」で動作します）。`;
+    chat.appendChild(w); scrollBottom();
+  }
+  setChips(IDLE_CHIPS);
+});
+</script>
+</body>
+</html>
